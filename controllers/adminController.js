@@ -1,4 +1,4 @@
-const Admin = require('../models/Admin');
+const Admin = require('../models/admin');
 const Vote = require('../models/Vote');
 const Candidate = require('../models/Candidate');
 const Block = require('../models/Block');
