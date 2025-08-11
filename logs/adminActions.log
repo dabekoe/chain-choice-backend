@@ -1,0 +1,1 @@
+fs.appendFileSync('logs/adminActions.log', `Admin ${admin.email} added a candidate at ${new Date().toISOString()}\n`);
