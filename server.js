@@ -12,9 +12,17 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // ✅ Enable CORS for frontend running on http://localhost:3001
+
+const allowedOrigins = [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'https://chain-choice-voting-git-main-douglas-projects-c7997ce1.vercel.app',
+  'https://chain-choice-backend-1.onrender.com' // add your production domain here
+];
+
 app.use(cors({
-  origin: 'http://localhost:3001',
-  credentials: true
+  origin: allowedOrigins,
+  credentials: true // if you use cookies or authentication
 }));
 
 // ✅ Middleware
