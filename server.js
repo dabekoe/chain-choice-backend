@@ -1,29 +1,38 @@
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
-const dotenv = require('dotenv');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-
-// ✅ Load environment variables
-dotenv.config();
+const path = require('path');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// ✅ Enable CORS for frontend running on http://localhost:3001
-
+// ✅ Add all allowed origins (including your production domain)
 const allowedOrigins = [
   'http://localhost:3000',
   'http://localhost:3001',
-  'https://chain-choice-voting-git-main-douglas-projects-c7997ce1.vercel.app',
-  'https://chain-choice-voting-plum.vercel.app' // add your production domain here
+  'https://chain-choice-backend-1.onrender.com',
+  'https://chain-choice-voting-plum.vercel.app',
+  'https://www.chainchoice.com' // <-- Add your custom domain here if you have one
 ];
 
+// ✅ CORS middleware with preflight support
 app.use(cors({
-  origin: allowedOrigins,
-  credentials: true // if you use cookies or authentication
+  origin: function(origin, callback) {
+    // Allow requests with no origin (like mobile apps, curl, etc.)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    } else {
+      return callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true
 }));
+
+// Handle preflight requests for all routes
+app.options('*', cors());
 
 // ✅ Middleware
 app.use(express.json());
@@ -46,7 +55,7 @@ const adminRoutes = require('./routes/adminRoutes');
 const candidateRoutes = require('./routes/candidateRoutes');
 const voteRoutes = require('./routes/voteRoutes');
 const resultsRoutes = require('./routes/resultsRoutes');
-const path = require('path');
+
 // ✅ Route setup
 app.use('/api/voters', voterRoutes);
 app.use('/api/admins', adminRoutes);
@@ -54,6 +63,7 @@ app.use('/api/candidates', candidateRoutes);
 app.use('/api/votes', voteRoutes);
 app.use('/api/results', resultsRoutes);
 app.use('/logos', express.static(path.join(__dirname, 'public/logos')));
+
 // ✅ Root route
 app.get('/', (req, res) => {
   res.send('Ghana Online Voting System Backend Running');
